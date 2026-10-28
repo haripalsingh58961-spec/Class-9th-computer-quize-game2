@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Class 9 Computer Quiz Game</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #74b9ff, #0984e3);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .quiz-container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 10px rgba(0,0,0,0.2);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+        h2 { color: #2d3436; }
+        .question {
+            font-size: 18px;
+            margin-bottom: 20px;
+            color: #2d3436;
+        }
+        .options button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            margin: 8px 0;
+            background: #dfe6e9;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .options button:hover {
+            background: #0984e3;
+            color: white;
+        }
+        #score-container {
+            font-size: 20px;
+            font-weight: bold;
+            color: #27ae60;
+        }
+        .btn-action {
+            padding: 10px 20px;
+            background: #0984e3;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="quiz-container" id="game-box">
+    <h2>Class 9 Computer Quiz</h2>
+    <div id="quiz">
+        <div class="question" id="question-text">Loading question...</div>
+        <div class="options" id="options-box"></div>
+    </div>
+</div>
+
+<script>
+    // Level 1 (Easy - 10 Questions) & Level 2 (Difficult - 10 Questions)
+    const levels = [
+        {
+            title: "Level 1: Basic Fundamentals",
+            questions: [
+                { q: "Which of the following is an input device?", options: ["Monitor", "Keyboard", "Printer", "Speaker"], answer: 1 },
+                { q: "What does CPU stand for?", options: ["Central Processing Unit", "Central Program Utility", "Computer Personal Unit", "Central Processor Union"], answer: 0 },
+                { q: "Which of the following is system software?", options: ["MS Word", "Windows OS", "Photoshop", "Paint"], answer: 1 },
+                { q: "What is the extension of a Notepad file?", options: [".docx", ".txt", ".jpg", ".exe"], answer: 1 },
+                { q: "Which memory is temporary (volatile)?", options: ["ROM", "Hard Disk", "RAM", "CD-ROM"], answer: 2 },
+                { q: "Brain of the computer is?", options: ["ALU", "Control Unit", "CPU", "Memory"], answer: 2 },
+                { q: "1 Byte is equal to how many bits?", options: ["4 bits", "8 bits", "1024 bits", "2 bits"], answer: 1 },
+                { q: "Which device is used to print hard copy?", options: ["Keyboard", "Scanner", "Printer", "Monitor"], answer: 2 },
+                { q: "An algorithm is a...", options: ["Machine code", "Step-by-step procedure", "Browser", "Operating System"], answer: 1 },
+                { q: "Which is not an output device?", options: ["Speaker", "Projector", "Mouse", "Monitor"], answer: 2 }
+            ]
+        },
+        {
+            title: "Level 2: Advanced & Difficult",
+            questions: [
+                { q: "Which protocol is used to fetch emails from a server?", options: ["FTP", "SMTP", "POP3", "HTTP"], answer: 2 },
+                { q: "What is the base of the Hexadecimal number system?", options: ["2", "8", "10", "16"], answer: 3 },
+                { q: "Which company developed the Python programming language?", options: ["Microsoft", "Google", "Guido van Rossum", "Apple"], answer: 2 },
+                { q: "What does 'URL' stand for?", options: ["Uniform Resource Locator", "Universal Radio Link", "Unified Read Only", "Utility Resource List"], answer: 0 },
+                { q: "Which shortcut key is used to undo an action in Windows?", options: ["Ctrl + C", "Ctrl + V", "Ctrl + Z", "Ctrl + Y"], answer: 2 },
+                { q: "Which of the following is a high-level language?", options: ["Assembly", "Machine Code", "Python", "Binary"], answer: 2 },
+                { q: "What is the full form of HTML?", options: ["Hyper Text Markup Language", "High Tech Multi Language", "Hyper Transfer Machine Language", "None of these"], answer: 0 },
+                { q: "Which storage device uses laser technology?", options: ["Hard Disk", "Floppy Disk", "CD-ROM", "RAM"], answer: 2 },
+                { q: "Which gate is known as the universal gate?", options: ["AND gate", "OR gate", "NAND gate", "NOT gate"], answer: 2 },
+                { q: "What is 'Linux'?", options: ["An Antivirus", "An Operating System", "A Web Browser", "A Malware"], answer: 1 }
+            ]
+        }
+    ];
+
+    let currentLevel = 0;
+    let currentQuestion = 0;
+    let score = 0;
+
+    const questionText = document.getElementById("question-text");
+    const optionsBox = document.getElementById("options-box");
+    const gameBox = document.getElementById("game-box");
+
+    function loadQuiz() {
+        if (currentQuestion < levels[currentLevel].questions.length) {
+            let q = levels[currentLevel].questions[currentQuestion];
+            gameBox.innerHTML = `<h2>${levels[currentLevel].title}</h2><div class="question">${(currentQuestion + 1)}. ${q.q}</div><div class="options" id="options-box"></div>`;
+            const optBox = document.getElementById("options-box");
+            q.options.forEach((opt, index) => {
+                let btn = document.createElement("button");
+                btn.innerText = opt;
+                btn.onclick = () => checkAnswer(index);
+                optBox.appendChild(btn);
+            });
+        } else {
+            showLeaderboard();
+        }
+    }
+
+    function checkAnswer(selected) {
+        if (selected === levels[currentLevel].questions[currentQuestion].answer) {
+            score++;
+        }
+        currentQuestion++;
+        loadQuiz();
+    }
+
+    function showLeaderboard() {
+        let totalQ = levels[currentLevel].questions.length;
+        let percentage = (score / totalQ) * 100;
+        let rankMessage = "";
+
+        if (percentage >= 90) rankMessage = "🏆 Rank: 1st (Outstanding! Computer Genius)";
+        else if (percentage >= 75) rankMessage = "🥈 Rank: 2nd (Great Job!)";
+        else if (percentage >= 50) rankMessage = "🥉 Rank: 3rd (Good Effort!)";
+        else rankMessage = "💡 Keep practicing to improve your rank!";
+
+        let nextBtnHTML = "";
+        if (currentLevel < levels.length - 1) {
+            nextBtnHTML = `<button class="btn-action" onclick="nextLevel()">Agla Level Khelein (Difficult)</button><br>`;
+        }
+
+        gameBox.innerHTML = `
+            <h2>Level Finished! 🎉</h2>
+            <p>Aapka Score: <span id="score-container">${score}</span> / ${totalQ}</p>
+            <p><b>${rankMessage}</b></p>
+            ${nextBtnHTML}
+            <button class="btn-action" onclick="restartQuiz()" style="background:#e74c3c;">Retry / Phir se Khelein</button>
+        `;
+    }
+
+    function nextLevel() {
+        currentLevel++;
+        currentQuestion = 0;
+        loadQuiz();
+    }
+
+    function restartQuiz() {
+        currentLevel = 0;
+        currentQuestion = 0;
+        score = 0;
+        loadQuiz();
+    }
+
+    loadQuiz();
+</script>
+
+</body>
+</html>
